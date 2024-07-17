@@ -191,22 +191,23 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 
 	Spring spring{};
-	spring.anchor = { 0.0f,0.0f,0.0f };
-	spring.naturalLength = 1.0f;
+	spring.anchor = { 0.0f,1.0f,0.0f };
+	spring.naturalLength = 0.7f;
 	spring.stiffness = 100.0f;
 	spring.dampingCoefficient = 2.0f;
 
 	Ball ball{};
-	ball.position = { 1.2f,0.0f,0.0f };
+	ball.position = { 0.8f,0.2f,0.0f };
 	ball.mass = 2.0f;
 	ball.radius = 0.05f;
 	ball.color = BLUE;
 
+	const Vector3 kGravity{ 0.0f,-9.8f,0.0f };
 
 	float deltaTime = 1.0f / 60.0f;
 
-	Vector3 cameraPosition = { 0.0f ,0.0f,-20.0f };
-	Vector3 cameraTranslate = { 0.0f,-1.0f,-6.49f };
+	Vector3 cameraPosition = { 0.0f ,0.0f,-14.0f };
+	Vector3 cameraTranslate = { 0.0f,0.0f,-6.49f };
 	Vector3 cameraRotate = { -0.26f,0.0f,0.0f };
 
 	bool start = false;
@@ -243,14 +244,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 
 			//ball.velocity += ball.acceleration * deltaTime;
-			ball.velocity.x += ball.acceleration.x * deltaTime;
-			ball.velocity.y += ball.acceleration.y * deltaTime;
-			ball.velocity.z += ball.acceleration.z * deltaTime;
+			ball.velocity.x += (ball.acceleration.x + kGravity.x) * deltaTime;
+			ball.velocity.y += (ball.acceleration.y + kGravity.y) * deltaTime;
+			ball.velocity.z += (ball.acceleration.z + kGravity.z) * deltaTime;
 
 
 			ball.position.x += ball.velocity.x * deltaTime;
-			ball.position.y += ball.velocity.y * deltaTime;
+			ball.position.y += ball.velocity.y * deltaTime; 
 			ball.position.z += ball.velocity.z * deltaTime;
+
 		}
 
 		Matrix4x4 worldMatrix = myMath->MakeAffineMatrix({ 1.0f,1.0f,1.0f }, cameraRotate, cameraTranslate);
