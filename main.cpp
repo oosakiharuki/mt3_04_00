@@ -232,12 +232,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				Vector3 restPosition = spring.anchor + direction * spring.naturalLength;
 				Vector3 displacement = length * (ball.position - restPosition);
 				Vector3 restoringForce = -spring.stiffness * displacement;
-				Vector3 Force = restoringForce;	
+				//Vector3 Force = restoringForce;	
 
 				Vector3 dampingForce = -spring.dampingCoefficient * ball.velocity;
-				Vector3 force = restoringForce * dampingForce;
+				Vector3 force = restoringForce + dampingForce;
 
-				ball.acceleration = Force / ball.mass;
+				ball.acceleration = force / ball.mass;
 
 			}
 
@@ -268,9 +268,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			ball.radius
 		};
 
-		Novice::DrawLine((int)spring.anchor.x, (int)spring.anchor.y, (int)sphere.center.x, (int)sphere.center.y,WHITE);
+		DrawSphere(sphere, WorldViewProjectionMatrix, viewportMatrix, ball.color);
 
-		DrawSphere(sphere, WorldViewProjectionMatrix, viewportMatrix, BLUE);
+
+		Vector3 startLine = Transform(Transform(spring.anchor, WorldViewProjectionMatrix), viewportMatrix);
+		Vector3 endLine = Transform(Transform(ball.position, WorldViewProjectionMatrix), viewportMatrix);
+
+
+
+		Novice::DrawLine((int)startLine.x, (int)startLine.y, (int)endLine.x, (int)endLine.y,WHITE);
+
+
 
 		ImGui::Begin("window");
 		ImGui::DragFloat3("CameraTranslate", &cameraTranslate.x, 0.01f);
